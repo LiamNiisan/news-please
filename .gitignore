@@ -3,6 +3,8 @@
 # the download folder for any saved, crawled data (testing)
 data/
 .resume_jobdir/
+cc_download_articles/*
+cc_download_warc/*
 __pycache__/
 .idea/
 .DS_Store

@@ -23,12 +23,10 @@ class NewsPlease:
     """
     Access news-please functionality via this interface
     """
-
     @staticmethod
-    def from_warc(warc_record, decode_errors="replace", fetch_images=True):
+    def from_warc_get_html(warc_record, decode_errors="replace"):
         """
-        Extracts relevant information from a WARC record. This function does not invoke scrapy but only uses the article
-        extractor.
+        Get html file from a warc record.
         :return:
         """
         raw_stream = warc_record.raw_stream.read()
@@ -50,6 +48,19 @@ class NewsPlease:
             html = raw_stream.decode('utf-8', errors=decode_errors)
         if not html:
             raise EmptyResponseError()
+
+        return html
+
+
+    @staticmethod
+    def from_warc(warc_record, decode_errors="replace", fetch_images=True, html=None):
+        """
+        Extracts relevant information from a WARC record. This function does not invoke scrapy but only uses the article
+        extractor.
+        :return:
+        """
+        if not html:
+            html = NewsPlease.from_warc_get_html(warc_record, decode_errors)
         url = warc_record.rec_headers.get_header('WARC-Target-URI')
         download_date = warc_record.rec_headers.get_header('WARC-Date')
         article = NewsPlease.from_html(html, url=url, download_date=download_date, fetch_images=fetch_images)
